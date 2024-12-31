@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Симуляция столкновений блоков</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 20px;
+        }
+
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .controls label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 16px;
+        }
+
+        .controls input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .controls button {
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .controls button:hover {
+            background-color: #45a049;
+        }
+
+        #info {
+            font-size: 18px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        #description {
+            
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            margin: 20px;
+        }
+
+        #description h2, #description h3 {
+            color: #2c3e50;
+        }
+
+        #description ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="description">
+        <h2>Механикалық соқтығыстардың көмегімен π есептеу</h2>
+        <p>
+        Бұл әдіс сақталу заңдары мен іргелі математикалық тұрақтылар арасындағы байланысты көрсетеді.
+        Ол математик және физик Григорий Гальпериннің еңбегіне негізделген.
+        </p>
+        <h3>Тәжірибенің мәні</h3>
+        <p>
+        Идеясы π санын есептеу үшін массалары әртүрлі екі дененің механикалық соқтығысуын пайдалану. Жүйе екі денеден (мысалы, блоктардан) және қабырғадан тұрады:
+        </p>
+        <ul>
+        <li><strong>1-блок:</strong>қабырғаға жақынырақ және онымен соқтығысуы мүмкін.</li>
+        <li><strong>2-блок:</strong> үлкенірек және 1-блокқа қарай жылжиды.</li>
+        </ul>
+        <p>
+        Соқтығыстар кезінде энергия мен импульстің сақталу заңдары сақталады. Қолданылатын модель соқтығыстардың саны денелердің массаларының қатынасына байланысты екеніне негізделген.
+        </p>
+        <h3>π санымен байланыс</h3>
+        <p>
+        Соқтығыстардың саны блоктардың массаларының қатынасына байланысты. Егер массалар 1:m ретінде байланысты болса, мұндағы m - 10-ның дәрежесі (мысалы, 10, 100, 10000 және т.б.), онда соқтығыстар саны π санының бірінші n + 1 цифрларына тең болады.
+        </p>
+        <ul>
+        <li>1 : 100 үшін, соқтығыстар саны = 31.</li>
+        <li>1 үшін: 10000, соқтығыстар саны = 314.</li>
+        </ul>
+        <h3>Түсіндіру</h3>
+        <ol>
+        <li>
+        <strong>Физика заңдары:</strong>
+        <ul>
+        <li>Импульстің сақталу заңы: <img src="image1.png"></li>
+        <li>Энергияның сақталу заңы: <img src="image.png"></li>
+        </ul>
+        </li>
+        <li>
+        <strong>Математикалық байланыс:</strong>Соқтығыстар саны масса қатынасына байланысты.
+        </li>
+        </ol>
+    
+</div>
+    <!-- Основной контейнер -->
+    <div class="container">
+        <h1>Симуляция столкновений блоков</h1>
+
+        <!-- Контролы для ввода параметров -->
+        <div class="controls">
+            <label for="mass1">Масса блока 1 (КГ):</label>
+            <input id="mass1" type="number" value="1" step="0.1" min="0.1">
+            <label for="mass2">Масса блока 2 (КГ):</label>
+            <input id="mass2" type="number" value="100" step="1" min="1">
+            <div>
+                <button onclick="updateMasses()">Обновить массы</button>
+                <button onclick="startSimulation()">Запустить</button>
+                <button onclick="resetSimulation()">Сбросить</button>
+            </div>
+        </div>
+
+        <!-- Информация о столкновениях -->
+        <p id="info">Столкновений: 0</p>
+    </div>
+
+  
+
+    
+
+            
+    <script>
+        class Block {
+            constructor(x, mass, w, velX) {
+                this.mass = mass;
+                this.w = w;
+                this.pos = createVector(x, height - this.w);
+                this.vel = createVector(velX, 0);
+            }
+
+            update() {
+                this.pos.add(this.vel);
+            }
+
+            edge() {
+                if (this.pos.x <= 0) {
+                    collisions++;
+                    this.pos.x = 0;
+                    this.vel.mult(-1);
+                }
+            }
+
+            collide(other) {
+                if (this.pos.x + this.w < other.pos.x || this.pos.x > other.pos.x + other.w) return;
+                collisions++;
+
+                const { u1, u2 } = solveForVels(this.mass, other.mass, this.vel.x, other.vel.x);
+
+                this.vel = createVector(u1, 0);
+                other.vel = createVector(u2, 0);
+            }
+
+            show() {
+                fill(this.mass === parseFloat(document.getElementById('mass1').value) ? 'red' : 'green');
+                stroke(100);
+                rect(this.pos.x, this.pos.y, this.w, this.w);
+                fill(0);
+                noStroke();
+                textSize(14);
+                text(`Масса КГ: ${this.mass}`, this.pos.x + 5, this.pos.y - 5);
+            }
+        }
+
+        function solveForVels(m1, m2, v1, v2) {
+            return {
+                u1: (2 * m2 * v2 - m2 * v1 + m1 * v1) / (m2 + m1),
+                u2: (m2 * v2 - v2 * m1 + 2 * m1 * v1) / (m2 + m1),
+            };
+        }
+
+        let block1, block2;
+        let collisions = 0;
+        let timeStamps = 500;
+        let isRunning = false;
+
+        function setup() {
+            const canvas = createCanvas(800, 300);
+            canvas.parent(document.body);
+            initializeBlocks();
+        }
+
+        function initializeBlocks() {
+            const mass1 = parseFloat(document.getElementById('mass1').value);
+            const mass2 = parseFloat(document.getElementById('mass2').value);
+
+            block1 = new Block(200, mass1, 50, 0);
+            block2 = new Block(400, mass2, 100, -1.2 / timeStamps);
+
+            collisions = 0;
+            document.getElementById('info').textContent = `Столкновений: ${collisions}`;
+        }
+
+        function updateMasses() {
+            initializeBlocks();
+        }
+
+        function startSimulation() {
+            isRunning = true;
+        }
+
+        function resetSimulation() {
+            isRunning = false;
+            initializeBlocks();
+        }
+
+        function draw() {
+            background(220);
+            if (isRunning) {
+                for (let i = 0; i < timeStamps; i++) {
+                    block1.update();
+                    block1.edge();
+                    block2.collide(block1);
+                    block2.update();
+                }
+            }
+
+            block1.show();
+            block2.show();
+            document.getElementById('info').textContent = `Столкновений: ${collisions}`;
+        }
+    </script>
+</body>
+
+</html>
