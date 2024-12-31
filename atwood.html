@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Машина Этвуда</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        canvas {
+            background: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 10px;
+        }
+
+        .controls {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls input {
+            padding: 8px;
+            width: 150px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        .controls input:focus {
+            border-color: #4CAF50;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: #218838;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            gap: 10px;
+            font-size: 16px;
+            color: #333;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .info p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .controls input {
+                width: 120px;
+            }
+
+            .controls button {
+                width: 150px;
+            }
+        }
+        #description {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: #555;
+            text-align: left;
+        }
+
+        #description h2,
+        #description h3 {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="description">
+        <h1>Денелердің еркін түсуіне тәжірибе жүргізу</h1>
+        <p>Еркін түсудің жоғары үдеуіне байланысты эксперименттік қондырғының жоғары биіктігі қажет. Атвудтың машинасы бұл қиындықты болдырмайды және ыңғайлы жылдамдыққа дейін баяулайды. Atwood's Ideal Machine келесі конструкцияға ие: осінде үйкеліс жоқ, үстел үстінде белгілі бір биіктікте бекітілген, созылмайтын және салмақсыз жіп лақтырылған салмақсыз блок арқылы оның ұшына массасы бар екі дене тартылады. байланған <strong>м1</strong> және <strong>м2</strong>.</p>
+        <p>Денелердің массалары тең болғанда (<strong>м1 = м2</strong>) жүйе жүктердің орналасуына қарамастан, немқұрайлы тепе-теңдік күйінде болады.</p>
+        <p>Егер <strong>м1 ≠ м2</strong>, жүктер алға жылжи бастайды.</p>
+        <p>Этвуд машинасы жіптің бір ұшында шексіз шығырға ілінген екі массадан тұрады. Бұл жағдайда бір масса (m₁) көтеріледі, ал екіншісі (m₂) төмендейді. Жүйенің үдеуін мына формула арқылы есептеуге болады: <img src="atwood.png"></p>
+        <p>g – ауырлық күшінің әсерінен үдеу. Бұл формула екі заттың массаларының айырмашылығын және ауырлық күшін ескереді. Этвуд машинасы тұрақты үдеумен денелердің қозғалысын зерттеуге көмектеседі.</p>
+        <h1>Машина Этвуда</h1>
+    </div>
+    <div class="main-container">
+        <canvas id="atwoodCanvas" width="650" height="600"></canvas>
+        <div class="info">
+            <div class="controls">
+                <label for="massA">Масса A (кг):</label>
+                <input type="number" id="massA" placeholder="Введите массу A" step="0.1">
+                <label for="massB">Масса B (кг):</label>
+                <input type="number" id="massB" placeholder="Введите массу B" step="0.1">
+                <button id="startSimulation">Старт</button>
+            </div>
+            <p id="velocityA">Скорость A: 0 м/с</p>
+            <p id="velocityB">Скорость B: 0 м/с</p>
+            <p id="accelerationA">Ускорение A: 0 м/с²</p>
+            <p id="accelerationB">Ускорение B: 0 м/с²</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('atwoodCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const g = 9.81; // Ускорение свободного падения
+        let mA = 0, mB = 0; // Массы блоков
+        let yA = 300, yB = 300; // Начальные координаты блоков
+        let vA = 0, vB = 0; // Скорости
+        let aA = 0, aB = 0; // Ускорения
+        let running = false; // Флаг симуляции
+        const speedFactor = 0.001; // Коэффициент замедления скорости
+
+        // Функция для отрисовки системы
+        function drawSystem() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Рисуем шкив
+            ctx.beginPath();
+            ctx.arc(325, 100, 30, 0, Math.PI * 2);
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.strokeStyle = "black";
+            ctx.stroke();
+
+            // Рисуем веревки
+            ctx.beginPath();
+            ctx.moveTo(295, yA); // Веревка A
+            ctx.lineTo(295, 100); // Шкив
+            ctx.moveTo(355, yB); // Веревка B
+            ctx.lineTo(355, 100); // Шкив
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Рисуем блоки
+            ctx.fillStyle = "green";
+            ctx.fillRect(275, yA, 40, 40); // Блок A
+            ctx.fillStyle = "blue";
+            ctx.fillRect(335, yB, 40, 40); // Блок B
+
+            // Отображаем массы блоков
+            ctx.fillStyle = "black";
+            ctx.font = "16px Arial";
+            ctx.fillText(`${mA} кг`, 275, yA - 10); // Масса блока A
+            ctx.fillText(`${mB} кг`, 335, yB - 10); // Масса блока B
+        }
+
+        // Обновление системы
+        function updateSystem() {
+            if (!running) return;
+
+            if (mA !== mB) {
+                const fNet = Math.abs(mA - mB) * g;
+                const totalMass = mA + mB;
+                const acceleration = fNet / totalMass;
+
+                // Определяем направления
+                aA = mA > mB ? -acceleration : acceleration;
+                aB = -aA;
+
+                // Применяем коэффициент замедления скорости
+                vA += aA * speedFactor;
+                vB += aB * speedFactor;
+
+                yA -= vA;
+                yB -= vB;
+
+                // Ограничение движения блоков
+                if (yA <= 100 || yB <= 100 || yA >= 500 || yB >= 500) {
+                    running = false;
+                }
+
+                // Обновляем информацию о скорости и ускорении
+                document.getElementById('velocityA').textContent = `Скорость A: ${vA.toFixed(2)} м/с`;
+                document.getElementById('velocityB').textContent = `Скорость B: ${vB.toFixed(2)} м/с`;
+                document.getElementById('accelerationA').textContent = `Ускорение A: ${aA.toFixed(2)} м/с²`;
+                document.getElementById('accelerationB').textContent = `Ускорение B: ${aB.toFixed(2)} м/с²`;
+            }
+
+            drawSystem();
+
+            if (running) {
+                requestAnimationFrame(updateSystem);
+            }
+        }
+
+        // Запуск симуляции
+        document.getElementById('startSimulation').addEventListener('click', () => {
+            const massAInput = document.getElementById('massA').value;
+            const massBInput = document.getElementById('massB').value;
+
+            if (!massAInput || !massBInput) {
+                alert('Введите значения масс для обоих блоков.');
+                return;
+            }
+
+            mA = parseFloat(massAInput);
+            mB = parseFloat(massBInput);
+
+            if (mA <= 0 || mB <= 0) {
+                alert('Массы должны быть больше нуля.');
+                return;
+            }
+
+            // Сброс параметров
+            yA = 300;
+            yB = 300;
+            vA = 0;
+            vB = 0;
+            running = true;
+
+            updateSystem();
+        });
+
+        // Первая отрисовка системы
+        drawSystem();
+    </script>
+</body>
+
+</html>

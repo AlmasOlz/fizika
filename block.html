@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collision Simulation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <label>Mass A [kg]: <input id="massA" type="number" value="1" step="0.1"></label><br>
+        <label>Mass B [kg]: <input id="massB" type="number" value="100" step="0.1"></label><br>
+        <button id="startButton">Start</button>
+        <button id="stopButton">Stop</button>
+        <button id="resetButton">Reset</button>
+        <div id="info"></div>
+    </div>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Objects
+        const floorGeometry = new THREE.BoxGeometry(50, 1, 5);
+        const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+        const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        floor.position.y = -10.5;
+        scene.add(floor);
+
+        const wallGeometry = new THREE.BoxGeometry(1, 10, 5);
+        const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+        const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+        wall.position.set(-25.5, -6, 0);
+        scene.add(wall);
+
+        const cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
+        const materialA = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const materialB = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+        const cubeA = new THREE.Mesh(cubeGeometry, materialA);
+        const cubeB = new THREE.Mesh(cubeGeometry, materialB);
+
+        cubeA.position.set(0, -8, 0);
+        cubeB.position.set(23, -8, 0);
+
+        scene.add(cubeA);
+        scene.add(cubeB);
+
+        // Camera position
+        camera.position.z = 50;
+
+        // Simulation variables
+        let mA = 1, mB = 100;
+        let vA = 0, vB = -5;
+        let isRunning = false;
+        let t = 0, collisions = 0;
+        const dt = 0.02;
+
+        const updateInfo = () => {
+            document.getElementById('info').innerText = `Collisions: ${collisions}\nVelocity A: ${vA.toFixed(2)} m/s\nVelocity B: ${vB.toFixed(2)} m/s`;
+        };
+
+        const resetSimulation = () => {
+            isRunning = false;
+            mA = parseFloat(document.getElementById('massA').value) || 1;
+            mB = parseFloat(document.getElementById('massB').value) || 100;
+            vA = 0;
+            vB = -5;
+            t = 0;
+            collisions = 0;
+            cubeA.position.set(0, -8, 0);
+            cubeB.position.set(23, -8, 0);
+            updateInfo();
+        };
+
+        const startSimulation = () => {
+            isRunning = true;
+        };
+
+        const stopSimulation = () => {
+            isRunning = false;
+        };
+
+        document.getElementById('startButton').addEventListener('click', startSimulation);
+        document.getElementById('stopButton').addEventListener('click', stopSimulation);
+        document.getElementById('resetButton').addEventListener('click', resetSimulation);
+
+        // Physics functions
+        const velAfterBlockCollision = (m1, m2, v1, v2, e = 1) => {
+            const v1Final = (m1 * v1 + m2 * v2 - e * m2 * (v1 - v2)) / (m1 + m2);
+            const v2Final = e * (v1 - v2) + v1Final;
+            return [v1Final, v2Final];
+        };
+
+        const velAfterWallCollision = (v, e = 1) => -e * v;
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+
+            if (isRunning) {
+                // Move cubes
+                cubeA.position.x += vA * dt;
+                cubeB.position.x += vB * dt;
+
+                // Collision detection between cubes
+                if (cubeB.position.x - 2 <= cubeA.position.x + 2) {
+                    [vA, vB] = velAfterBlockCollision(mA, mB, vA, vB);
+                    cubeB.position.x = cubeA.position.x + 4; // Correct overlap
+                    collisions++;
+                }
+
+                // Collision detection with wall
+                if (cubeA.position.x - 2 <= wall.position.x + 0.5) {
+                    vA = velAfterWallCollision(vA);
+                    cubeA.position.x = wall.position.x + 2.5; // Correct overlap
+                    collisions++;
+                }
+
+                // Stop condition
+                if (Math.abs(vA) < 0.001 && Math.abs(vB) < 0.001) {
+                    isRunning = false;
+                }
+
+                t += dt;
+                updateInfo();
+            }
+
+            renderer.render(scene, camera);
+        };
+
+        resetSimulation();
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Физика</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2e8b57;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            padding: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
+        a:hover {
+            background-color: #45a049;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        a:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            a {
+                width: 80%;
+                padding: 12px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            a {
+                width: 90%;
+                padding: 10px 20px;
+            }
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Физические эксперименты</h1>
+
+    <nav>
+        <a href="atwood.html">Машина Атвуда</a>
+        <a href="double_pendulum.html">Двойной маятник</a>
+        <a href="пи/index.html">Импульс сақтау заңы</a>
+        <a href="Galton.html">Доска Гальтона</a>
+        <a href="Disc/index.html">Цветовой диск Ньютона</a>
+    </nav>
+
+    <footer>
+        <p>&copy; 2024 Физика. Все права защищены.</p>
+    </footer>
+
+</body>
+</html>

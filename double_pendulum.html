@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Double Pendulum Simulation</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            margin: 20px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        canvas {
+            background: #fff;
+            border: 2px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 25px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:active {
+            background-color: #3e8e41;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        #description {
+            
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            margin: 20px;
+        }
+
+        #description h2, #description h3 {
+            color: #2c3e50;
+        }
+
+        #description ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Двойной маятник</h1>
+        <p>Откройте хаотическую природу движения двойного маятника!</p>
+    </header>
+    <div id="description">
+        <h1>Двойной маятник</h1>
+        <h1>Қос маятник</h1>
+        <p>Қос маятник деп бірі екіншісінің ұшында ілінетін екі маятниктен тұратын жүйені айтады. Ол салмақ деп аталатын екі ілулі денеден және екі өзекшеден тұрады. Бұл күрделі, сызықты емес қозғалыспен сипатталатын екі еркіндік дәрежесі бар динамикалық жүйенің мысалы.</p>
+       
+        <h2>Жүйе параметрлерін белгілеңіз:</h2>
+        <ul>
+        <li><b>m<sub>1</sub></b> және <b>m<sub>2</sub></b> - жүк массалары</li>
+        <li><b>l<sub>1</sub></b> және <b>l<sub>2</sub></b> - өзектер ұзындығы</li>
+        <li><b>&theta;<sub>1</sub></b> және <b>&theta;<sub>2</sub></b> - бірінші және екінші маятниктердің иілу бұрыштары тік</li >
+        <li><b>g</b> - еркін түсу үдеуі</li>
+        </ul>
+       
+        <h2>Қозғалыс теңдеулері</h2>
+        <p>Қос маятниктің қозғалысын сипаттау үшін Ньютон заңдары немесе Лагранж тәсілі қолданылады. Лагранжды қолдану арқылы алынған теңдеулер келесідей болады:</p>
+        <img src="double.png">
+        <p>Мұнда:</p>
+        <ul>
+        <li>&theta;<sub>1</sub>&#776; және &theta;<sub>2</sub>&#776; — бұрыштық үдеу</li>
+        <li>&theta;<sub>1</sub>&#775; және &theta;<sub>2</sub>&#775; — бұрыштық жылдамдықтар</li>
+        </ul>
+       
+        <h2>Жүйенің лагранжианы</h2>
+        <p><b>L</b> жүйесінің лагранжианы кинетикалық энергия <b>T</b> мен потенциалдық энергия <b>V</b> арасындағы айырмашылық ретінде анықталады:</p>
+        <p><b>L = T - V</b></p>
+        <h3>Жүйенің кинетикалық энергиясы:</h3>
+        <img src="double1.png">
+        <h3>Жүйенің потенциалдық энергиясы:</h3>
+        <img src="double2.png">
+       
+        <h2>Сандық шешім</h2>
+        <p>Бұл теңдеулерді шешу үшін Эйлер әдісі немесе Рунге-Кутта әдісі сияқты сандық әдістерді қолдануға болады. Осы әдістерді қолдана отырып, қос маятниктің қозғалысын модельдеуге болады, ол бастапқы шарттарға байланысты дұрыс немесе ретсіз болуы мүмкін.</p>
+       
+        <h2>Жүйе әрекеті</h2>
+        <p>Қос маятник - бұл бастапқы шарттардағы шамалы өзгерістердің өзі айтарлықтай басқа нәтижелерге әкелуі мүмкін хаотикалық жүйенің мысалы. Бұл хаос теориясын зерттеуді қызықты етеді.</p>
+    </div>
+
+    <canvas id="pendulumCanvas" width="600" height="600"></canvas>
+
+    <div class="controls">
+        <button id="start">Старт</button>
+        <button id="reset">Сброс</button>
+        <button id="speedUp">Ускорить</button>
+        <button id="slowDown">Замедлить</button>
+    </div>
+    <main>
+        
+    </main>
+
+    <footer>
+        © 2024 Двойной маятник | Все права защищены.
+    </footer>
+
+    <script>
+         // Constants
+         const g = 9.81; // Gravitational acceleration
+        const l1 = 150, l2 = 150; // Lengths of the rods in pixels
+        const m1 = 1, m2 = 1; // Masses of the pendulums
+        let dt = 0.02; // Time step (initial speed)
+
+        // Initial conditions
+        let theta1 = Math.PI / 2; // Initial angle of first pendulum
+        let theta2 = Math.PI / 4; // Initial angle of second pendulum
+        let omega1 = 0; // Initial angular velocity of first pendulum
+        let omega2 = 0; // Initial angular velocity of second pendulum
+
+        // Canvas setup
+        const canvas = document.getElementById('pendulumCanvas');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 4;
+
+        // Path setup
+        const path = []; // Store all the positions of the second mass (x2, y2)
+        let animationFrameId;
+
+        // Functions for acceleration calculation
+        function computeAcceleration(theta1, theta2, omega1, omega2) {
+            const delta = theta2 - theta1;
+
+            const denom1 = (m1 + m2) * l1 - m2 * l1 * Math.cos(delta) ** 2;
+            const denom2 = (l2 / l1) * denom1;
+
+            const alpha1 = (
+                m2 * l1 * omega1 ** 2 * Math.sin(delta) * Math.cos(delta) +
+                m2 * g * Math.sin(theta2) * Math.cos(delta) +
+                m2 * l2 * omega2 **2 * Math.sin(delta) - 
+                (m1 + m2) * g * Math.sin(theta1)
+            ) / denom1;
+
+            const alpha2 = (
+                -m2 * l2 * omega2 ** 2 * Math.sin(delta) * Math.cos(delta) +
+                (m1 + m2) * g * Math.sin(theta1) * Math.cos(delta) - 
+                (m1 + m2) * l1 * omega1 ** 2 * Math.sin(delta) - 
+                (m1 + m2) * g * Math.sin(theta2)
+            ) / denom2;
+
+            return [alpha1, alpha2];
+        }
+
+        // Update function for the simulation
+        function update() {
+            // Compute accelerations
+            const [alpha1, alpha2] = computeAcceleration(theta1, theta2, omega1, omega2);
+
+            // Update angular velocities
+            omega1 += alpha1 * dt;
+            omega2 += alpha2 * dt;
+
+            // Update angles
+            theta1 += omega1 * dt;
+            theta2 += omega2 * dt;
+
+            // Compute positions
+            const x1 = centerX + l1 * Math.sin(theta1);
+            const y1 = centerY + l1 * Math.cos(theta1);
+            const x2 = x1 + l2 * Math.sin(theta2);
+            const y2 = y1 + l2 * Math.cos(theta2);
+
+            // Add the new position of the second pendulum to the path
+            path.push({ x: x2, y: y2 });
+
+            // Clear canvas and redraw everything
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw rods
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw masses
+            ctx.beginPath();
+            ctx.arc(x1, y1, 10, 0, 2 * Math.PI);
+            ctx.arc(x2, y2, 10, 0, 2 * Math.PI);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+
+            // Draw path (leave the trail visible)
+            ctx.beginPath();
+            for (let i = 0; i < path.length; i++) {
+                const { x, y } = path[i];
+                ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        // Animation loop
+        function animate() {
+            update();
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // Start animation
+        function startAnimation() {
+            if (!animationFrameId) {
+                animate();
+            }
+        }
+
+        // Stop animation (reset everything)
+        function stopAnimation() {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+
+        // Reset simulation
+        function resetSimulation() {
+            stopAnimation();
+            theta1 = Math.PI / 2;
+            theta2 = Math.PI / 4;
+            omega1 = 0;
+            omega2 = 0;
+            path.length = 0; // Clear path
+            dt = 0.02; // Reset time step
+        }
+
+        // Event listeners for buttons
+        document.getElementById('start').addEventListener('click', function() {
+            startAnimation();
+        });
+
+        document.getElementById('reset').addEventListener('click', function() {
+            resetSimulation();
+            animate(); // Start from the beginning
+        });
+
+        document.getElementById('speedUp').addEventListener('click', function() {
+            dt *= 1.5;  // Increase speed by 50%
+        });
+
+        document.getElementById('slowDown').addEventListener('click', function() {
+            dt *= 0.7;  // Decrease speed by 30%
+        });
+    </script>
+</body>
+</html>
