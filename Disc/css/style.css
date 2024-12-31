@@ -1,0 +1,115 @@
+/* Общие стили для страницы */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.canvas {
+    display: block;
+    width: 80%;
+    height: 60%;
+    border: 1px solid #fff;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Стиль кнопки Start */
+.control-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.control-button:hover {
+    background-color: #45a049;
+}
+
+/* Стиль для ползунка скорости */
+.speed-label {
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.speed-control {
+    width: 150px;
+    height: 5px;
+    border-radius: 5px;
+    background: #ddd;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.speed-control:hover {
+    background: #aaa;
+}
+
+.speed-control::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.speed-control::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#description {
+            
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    margin: 20px;
+}
+
+#description h2, #description h3 {
+    color: #2c3e50;
+}
+
+#description ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
